@@ -12,39 +12,11 @@ ENV GRAILS_REPO_VERSION 0.1
 RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe" > /etc/apt/sources.list
 RUN apt-get -y update
 
-
 # install python-software-properties (so you can do add-apt-repository)
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q python-software-properties software-properties-common
 
 # install SSH server so we can connect multiple times to the container
 RUN apt-get -y install openssh-server && mkdir /var/run/sshd
-
-# >> a bit different way to install JDK from https://registry.hub.docker.com/u/tifayuki/java/
-RUN echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /etc/apt/sources.list && \
-    echo 'deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /etc/apt/sources.list && \
-    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886 && \
-    apt-get update && \
-    echo oracle-java${JAVA_VER}-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections && \
-    apt-get install -y --force-yes --no-install-recommends oracle-java${JAVA_VER}-installer oracle-java${JAVA_VER}-set-default && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists && \
-    rm -rf /var/cache/oracle-jdk${JAVA_VER}-installer
-
-# Set oracle java as the default java
-RUN update-java-alternatives -s java-${JAVA_VER}-oracle
-RUN echo "export JAVA_HOME=/usr/lib/jvm/java-${JAVA_VER}-oracle" >> ~/.bashrc
-
-# >> from https://github.com/onesysadmin/docker-gvm
-ENTRYPOINT ["gvm-exec.sh"]
-# gvm requires curl and unzip
-RUN apt-get update && \
-    apt-get install -yqq --no-install-recommends curl unzip && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-# install gvm
-RUN curl -s get.gvmtool.net | bash
-ADD gvm.config /.gvm/etc/config
-ADD bin/ /usr/local/bin/
 
 # install utilities
 RUN apt-get -y install vim git sudo zip bzip2 fontconfig curl
@@ -70,6 +42,31 @@ VOLUME ["/hida"]
 EXPOSE 8080
 EXPOSE 9000
 EXPOSE 22
+
+# >> a bit different way to install JDK from https://registry.hub.docker.com/u/tifayuki/java/
+RUN echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /etc/apt/sources.list && \
+    echo 'deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /etc/apt/sources.list && \
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C2518248EEA14886 && \
+    apt-get update && \
+    echo oracle-java${JAVA_VER}-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections && \
+    apt-get install -y --force-yes --no-install-recommends oracle-java${JAVA_VER}-installer oracle-java${JAVA_VER}-set-default && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists && \
+    rm -rf /var/cache/oracle-jdk${JAVA_VER}-installer
+
+
+# >> from https://github.com/onesysadmin/docker-gvm
+ENTRYPOINT ["gvm-exec.sh"]
+# gvm requires curl and unzip
+RUN apt-get update && \
+    apt-get install -yqq --no-install-recommends curl unzip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+# install gvm
+RUN curl -s get.gvmtool.net | bash
+ADD gvm.config /.gvm/etc/config
+ADD bin/ /usr/local/bin/
+
 
 CMD ["grails"]
 # Set default Grails Java Runtime env
