@@ -21,9 +21,6 @@ RUN apt-get -y install openssh-server && mkdir /var/run/sshd
 # install utilities
 RUN apt-get -y install vim git sudo zip bzip2 fontconfig curl
 
-# install maven
-RUN apt-get -y install maven
-
 # install node.js from PPA
 RUN add-apt-repository ppa:chris-lea/node.js
 RUN apt-get update
@@ -54,6 +51,8 @@ RUN echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /
     rm -rf /var/lib/apt/lists && \
     rm -rf /var/cache/oracle-jdk${JAVA_VER}-installer
 
+# install maven
+RUN apt-get -y install maven
 
 # >> from https://github.com/onesysadmin/docker-gvm
 ENTRYPOINT ["gvm-exec.sh"]
