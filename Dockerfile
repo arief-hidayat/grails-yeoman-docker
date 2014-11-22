@@ -4,9 +4,6 @@ MAINTAINER Arief Hidayat <mr.arief.hidayat@gmail.com>
 # Install Oracle Java 7 (jhipster using Java 8, Grails 2.3.x uses Java 7)
 ENV JAVA_VER 7
 ENV JAVA_HOME /usr/lib/jvm/java-7-oracle
-ENV GRAILS_VERSION 2.3.11
-ENV GRAILS_REPO grails-practice
-ENV GRAILS_REPO_VERSION 0.1
 
 # make sure the package repository is up to date
 RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe" > /etc/apt/sources.list
@@ -27,7 +24,7 @@ RUN apt-get update
 RUN apt-get -y install nodejs
 
 # install yeoman
-RUN npm install -g yo
+RUN npm install -g yo bower
 
 # configure the "hida" and "root" users
 RUN echo 'root:hida' |chpasswd
@@ -67,6 +64,11 @@ ADD bin/ /usr/local/bin/
 
 
 CMD ["grails"]
+
+ENV GRAILS_VERSION 2.3.11
+ENV GRAILS_REPO grails-practice
+ENV GRAILS_REPO_VERSION 0.1
+
 # Set default Grails Java Runtime env
 ENV JAVA_OPTS -Xms256m -Xmx512m -XX:MaxPermSize=256m -Djetty.serverHost=0.0.0.0
 # install newest version of grails 2.3.x
