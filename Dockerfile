@@ -48,7 +48,6 @@ RUN echo 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main' >> /
     echo oracle-java${JAVA_VER}-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections && \
     apt-get install -y --force-yes --no-install-recommends oracle-java${JAVA_VER}-installer oracle-java${JAVA_VER}-set-default && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists && \
     rm -rf /var/cache/oracle-jdk${JAVA_VER}-installer
 
 # install maven
@@ -58,7 +57,7 @@ RUN apt-get -y install maven
 ENTRYPOINT ["gvm-exec.sh"]
 # gvm requires curl and unzip
 RUN apt-get update && \
-    apt-get install -yqq --no-install-recommends curl unzip && \
+    apt-get install -yqq --no-install-recommends unzip && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 # install gvm
@@ -75,12 +74,8 @@ RUN gvm-wrapper.sh install grails ${GRAILS_VERSION} && gvm-wrapper.sh flush arch
 
 # install the sample app to download all Maven dependencies
 RUN cd /home/hida && \
-    wget https://github.com/arief-hidayat/${GRAILS_REPO}/archive/v${GRAILS_REPO_VERSION}.zip && \
-    unzip v${GRAILS_REPO_VERSION}.zip && \
-    rm v${GRAILS_REPO_VERSION}.zip
-RUN cd /home/hida/${GRAILS_REPO}-${GRAILS_REPO_VERSION} && npm install
+	git clone https://github.com/arief-hidayat/${GRAILS_REPO}.git
 RUN cd /home && chown -R hida:hida /home/hida
-RUN cd /home/hida/${GRAILS_REPO}-${GRAILS_REPO_VERSION} && sudo -u hida grails clean && sudo -u hida grails compile
-
+RUN cd /home/hida/${GRAILS_REPO} && sudo -u hida grails clean && sudo -u hida grails compile
 
 CMD    /usr/sbin/sshd -D
