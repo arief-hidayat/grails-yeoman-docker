@@ -46,12 +46,6 @@ RUN curl -s get.gvmtool.net | bash
 ADD gvm.config /.gvm/etc/config
 ADD bin/ /usr/local/bin/
 
-CMD ["grails"]
-# Set default Grails Java Runtime env
-ENV JAVA_OPTS -Xms256m -Xmx512m -XX:MaxPermSize=256m -Djetty.serverHost=0.0.0.0
-# install newest version of grails 2.3.x
-RUN gvm-wrapper.sh install grails ${GRAILS_VERSION} && gvm-wrapper.sh flush archives && gvm-exec.sh grails help
-
 # install utilities
 RUN apt-get -y install vim git sudo zip bzip2 fontconfig curl
 
@@ -71,6 +65,18 @@ RUN echo 'root:hida' |chpasswd
 RUN groupadd hida && useradd hida -s /bin/bash -m -g hida -G hida && adduser hida sudo
 RUN echo 'hida:hida' |chpasswd
 
+# expose the working directory, the Tomcat port, the Grunt server port, the SSHD port, and run SSHD
+VOLUME ["/hida"]
+EXPOSE 8080
+EXPOSE 9000
+EXPOSE 22
+
+CMD ["grails"]
+# Set default Grails Java Runtime env
+ENV JAVA_OPTS -Xms256m -Xmx512m -XX:MaxPermSize=256m -Djetty.serverHost=0.0.0.0
+# install newest version of grails 2.3.x
+RUN gvm-wrapper.sh install grails ${GRAILS_VERSION} && gvm-wrapper.sh flush archives && gvm-exec.sh grails help
+
 # install the sample app to download all Maven dependencies
 RUN cd /home/hida && \
     wget https://github.com/arief-hidayat/${GRAILS_REPO}/archive/v${GRAILS_REPO_VERSION}.zip && \
@@ -80,9 +86,5 @@ RUN cd /home/hida/${GRAILS_REPO}-${GRAILS_REPO_VERSION} && npm install
 RUN cd /home && chown -R hida:hida /home/hida
 RUN cd /home/hida/${GRAILS_REPO}-${GRAILS_REPO_VERSION} && sudo -u hida grails clean && sudo -u hida grails compile
 
-# expose the working directory, the Tomcat port, the Grunt server port, the SSHD port, and run SSHD
-VOLUME ["/hida"]
-EXPOSE 8080
-EXPOSE 9000
-EXPOSE 22
+
 CMD    /usr/sbin/sshd -D
