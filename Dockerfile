@@ -65,19 +65,15 @@ ADD bin/ /usr/local/bin/
 
 CMD ["grails"]
 
-ENV GRAILS_VERSION 2.3.11
-ENV GRAILS_REPO grails-practice
-ENV GRAILS_REPO_VERSION 0.1
-
 # Set default Grails Java Runtime env
 ENV JAVA_OPTS -Xms256m -Xmx512m -XX:MaxPermSize=256m -Djetty.serverHost=0.0.0.0
 # install newest version of grails 2.3.x
-RUN gvm-wrapper.sh install grails ${GRAILS_VERSION} && gvm-wrapper.sh flush archives && gvm-exec.sh grails help
+RUN gvm-wrapper.sh install grails 2.3.11 && gvm-wrapper.sh flush archives && gvm-exec.sh grails help
 
 # install the sample app to download all Maven dependencies
 RUN cd /home/hida && \
-	git clone https://github.com/arief-hidayat/${GRAILS_REPO}.git
+	git clone https://github.com/arief-hidayat/grails-practice.git
 RUN cd /home && chown -R hida:hida /home/hida
-RUN cd /home/hida/${GRAILS_REPO} && sudo -u hida grails clean && sudo -u hida grails compile
+RUN cd /home/hida/grails-practice && sudo -u hida grails clean && sudo -u hida grails compile
 
 CMD    /usr/sbin/sshd -D
