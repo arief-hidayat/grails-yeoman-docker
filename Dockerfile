@@ -62,8 +62,11 @@ RUN curl -s get.gvmtool.net | bash
 ADD gvm.config /.gvm/etc/config
 ADD bin/ /usr/local/bin/
 
+sudo -u hida chmod +x /usr/local/bin/
+
 RUN mkdir /home/hida/app
 WORKDIR /home/hida/app
+
 CMD ["grails"]
 # Set default Grails Java Runtime env
 ENV JAVA_OPTS -Xms256m -Xmx512m -XX:MaxPermSize=256m -Djetty.serverHost=0.0.0.0
