@@ -62,7 +62,7 @@ RUN curl -s get.gvmtool.net | bash
 ADD gvm.config /.gvm/etc/config
 ADD bin/ /usr/local/bin/
 
-sudo -u hida chmod +x /usr/local/bin/
+RUN sudo -u hida chmod +x /usr/local/bin/
 
 RUN mkdir /home/hida/app
 WORKDIR /home/hida/app
