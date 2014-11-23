@@ -36,9 +36,9 @@ EXPOSE 9000
 EXPOSE 22
 
 # install the sample app to download all Maven dependencies
-RUN cd /home/hida/app && \
+RUN cd /home/hida && \
 	git clone https://github.com/arief-hidayat/grails-practice.git
 RUN cd /home && chown -R hida:hida /home/hida
-RUN cd /home/hida/app/grails-practice && sudo -u hida grails clean && sudo -u hida grails compile
+RUN cd /home/hida/grails-practice && sudo -u hida grails clean && sudo -u hida grails compile
 
 CMD    /usr/sbin/sshd -D
