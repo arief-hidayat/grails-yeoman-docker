@@ -2,9 +2,9 @@ FROM      onesysadmin/grails:2.3
 MAINTAINER Arief Hidayat <mr.arief.hidayat@gmail.com>
 
 RUN java -version
-RUN gvm-wrapper.sh list
 RUN gvm-wrapper.sh default grails 2.3.11
-RUN gvm-exec.sh grails help
+ENV GRAILS_HOME /.gvm/grails/current
+ENV PATH $GRAILS_HOME/bin:$PATH
 
 RUN apt-get -y update
 
