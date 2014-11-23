@@ -1,8 +1,8 @@
 FROM      onesysadmin/grails:2.3
 MAINTAINER Arief Hidayat <mr.arief.hidayat@gmail.com>
 
-# install maven
-RUN apt-get -y install maven
+RUN apt-get -y update
+
 
 # install python-software-properties (so you can do add-apt-repository)
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q python-software-properties software-properties-common
@@ -12,6 +12,9 @@ RUN apt-get -y install openssh-server && mkdir /var/run/sshd
 
 # install utilities
 RUN apt-get -y install vim git sudo zip bzip2 fontconfig curl
+
+# install maven
+RUN apt-get -y install maven
 
 # install node.js from PPA
 RUN add-apt-repository ppa:chris-lea/node.js
