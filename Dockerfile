@@ -1,6 +1,8 @@
 FROM      onesysadmin/grails:2.3
 MAINTAINER Arief Hidayat <mr.arief.hidayat@gmail.com>
 
+run grails -version
+
 RUN apt-get -y update
 
 
@@ -34,6 +36,8 @@ VOLUME ["/hida"]
 EXPOSE 8080
 EXPOSE 9000
 EXPOSE 22
+
+CMD ["grails"]
 
 # install the sample app to download all Maven dependencies
 RUN cd /home/hida && \
