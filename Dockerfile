@@ -1,7 +1,10 @@
 FROM      onesysadmin/grails:2.3
 MAINTAINER Arief Hidayat <mr.arief.hidayat@gmail.com>
 
-run grails -version
+RUN java -version
+RUN gvm-wrapper.sh list
+RUN gvm-wrapper.sh default grails 2.3.11
+RUN gvm-exec.sh grails help
 
 RUN apt-get -y update
 
@@ -43,6 +46,6 @@ CMD ["grails"]
 RUN cd /home/hida && \
 	git clone https://github.com/arief-hidayat/grails-practice.git
 RUN cd /home && chown -R hida:hida /home/hida
-RUN cd /home/hida/grails-practice && sudo -u hida grails clean && sudo -u hida grails compile
+RUN cd /home/hida/grails-practice && gvm-exec.sh grails clean && gvm-exec.sh grails compile
 
 CMD    /usr/sbin/sshd -D
